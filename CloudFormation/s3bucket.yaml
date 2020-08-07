@@ -1,0 +1,15 @@
+--- 
+Description: S3 bucket created by Emmanuel C during CloudFormation Practice
+
+Resources:
+
+  AWSS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties: 
+      BucketName: !Sub "${AWS::Region}-${AWS::AccountId}-1"
+      AccessControl: PublicRead
+
+Outputs:
+  BucketName:
+    Description: Print out the name of our sample bucket
+    Value: !Ref AWSS3Bucket

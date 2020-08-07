@@ -1,0 +1,36 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description: SNS stack created by Emmanuel C during CloudFormation Practice
+
+
+# Resources to create
+Resources:
+
+  # SNS Alert
+  AlertSNSTopic:
+    Type: 'AWS::SNS::Topic'
+    Properties:
+      Subscription:
+        - Endpoint:
+            Ref: SNSEmail
+          Protocol: email
+      TopicName: !Ref TopicTitle
+
+
+
+# CloudFormation Parameters
+Parameters:
+
+  # Parameter for email
+  SNSEmail:
+    Type: String
+    default: eeccloudformation@gmail.com
+    Description: Enter email for SNS notification
+
+  # Enter your SNS Topic Here 
+  TopicTitle:
+    Description: Enter an SNS Topic Here, Please no space allowed
+    Type: String
+    Default: CloudFormationPractise
+
+
