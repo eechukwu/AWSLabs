@@ -1,0 +1,91 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  CloudFormation Template to create 
+  IAM User: Our admin user.  
+
+
+Resources:
+  
+  # Create an Admin user, we are referencing the Password feild defined in the parameter section of our template
+  MyCFUser:
+    Type: 'AWS::IAM::User'
+    Properties:
+      LoginProfile:
+        Password: !Ref Password
+  
+ # MyCFUserGroup:
+  #  Type: 'AWS::IAM::Group'
+  
+  
+  #MyCloudFormationAdminGroup:
+   # Type: 'AWS::IAM::Group'
+  
+  
+  #Users:
+    #Type: 'AWS::IAM::UserToGroupAddition'
+    #Properties:
+      #GroupName: !Ref MyCFUserGroup
+      #Users:
+        #- !Ref MyCFUser
+  
+  #Admins:
+    #Type: 'AWS::IAM::UserToGroupAddition'
+    #Properties:
+      #GroupName: !Ref MyCloudFormationAdminGroup
+      #Users:
+        #- !Ref MyCFUser
+  
+  
+  #MyCFUserPolicies:
+    #Type: 'AWS::IAM::Policy'
+    #Properties:
+      #PolicyName: MyCFUsers
+      #PolicyDocument:
+        #Statement:
+          #- Effect: Allow
+            #Action:
+              #- 'cloudformation:Describe*'
+              #- 'cloudformation:List*'
+              #- 'cloudformation:Get*'
+            #Resource: '*'
+      #Groups:
+        #- !Ref MyCFUserGroup
+  
+  #MyCloudFormationAdminPolicies:
+    #Type: 'AWS::IAM::Policy'
+    #Properties:
+      #PolicyName: MyCloudFormationAdmins
+      #PolicyDocument:
+        #Statement:
+          #- Effect: Allow
+            #Action: 'cloudformation:*'
+            #Resource: '*'
+      #Groups:
+        #- !Ref MyCloudFormationAdminGroup
+  
+  #MyCloudFormationKeys:
+    #Type: 'AWS::IAM::AccessKey'
+    #Properties:
+      #UserName: !Ref MyCFUser
+
+#Outputs:
+  #AccessKey:
+    #Value: !Ref MyCloudFormationKeys
+    #Description: AWSAccessKeyId of new user
+  #SecretKey:
+    #Value: !GetAtt 
+      #- MyCloudFormationKeys
+      #- SecretAccessKey
+    #Description: AWSSecretKey of new user
+
+
+  
+Parameters:
+  Password:
+    NoEcho: 'true'
+    Type: String
+    Description: New account password
+    MinLength: '1'
+    MaxLength: '41'
+    ConstraintDescription: the password must be between 1 and 41 characters
+
