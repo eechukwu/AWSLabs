@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: >-
-  CloudFormation Template to create 
-  IAM User,MyCFUserGroup 
+  CloudFormation Template to create admin user, groups, policies and access keys 
+  created by Emmanuel C during cloud formation practise 
 
 
 Resources:
@@ -10,77 +10,101 @@ Resources:
   MyCFUser:
     Type: 'AWS::IAM::User'
     Properties:
+      UserName : !Ref Username
       LoginProfile:
         Password: !Ref Password
   
+  # Create our User Group
   MyCFUserGroup:
     Type: 'AWS::IAM::Group'
   
+  # Create our User Group
+  MyCloudFormationAdminGroup:
+    Type: 'AWS::IAM::Group'
   
-  #MyCloudFormationAdminGroup:
-   # Type: 'AWS::IAM::Group'
+  # Add User MyCFUser To Group MyCFUserGroup
+  Users:
+    Type: 'AWS::IAM::UserToGroupAddition'
+    Properties:
+      GroupName: !Ref MyCFUserGroup
+      Users:
+        - !Ref MyCFUser
+  
+  # Add User MyCFUser To Group MyCloudFormationAdminGroup
+  Admins:
+    Type: 'AWS::IAM::UserToGroupAddition'
+    Properties:
+      GroupName: !Ref MyCloudFormationAdminGroup
+      Users:
+        - !Ref MyCFUser
   
   
-  #Users:
-    #Type: 'AWS::IAM::UserToGroupAddition'
-    #Properties:
-      #GroupName: !Ref MyCFUserGroup
-      #Users:
-        #- !Ref MyCFUser
+  # Add Policy To Group MyCFUserGroup
+  MyCFUserPolicies:
+    Type: 'AWS::IAM::Policy'
+    Properties:
+      PolicyName: MyCFUsers
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Action:
+              - 'cloudformation:Describe*'
+              - 'cloudformation:List*'
+              - 'cloudformation:Get*'
+            Resource: '*'
+      Groups:
+        - !Ref MyCFUserGroup
   
-  #Admins:
-    #Type: 'AWS::IAM::UserToGroupAddition'
-    #Properties:
-      #GroupName: !Ref MyCloudFormationAdminGroup
-      #Users:
-        #- !Ref MyCFUser
+  # Add Policy To Group MyCloudFormationAdminGroup
+  MyCloudFormationAdminPolicies:
+    Type: 'AWS::IAM::Policy'
+    Properties:
+      PolicyName: MyCloudFormationAdmins
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Action: 'cloudformation:*'
+            Resource: '*'
+      Groups:
+        - !Ref MyCloudFormationAdminGroup
   
-  
-  #MyCFUserPolicies:
-    #Type: 'AWS::IAM::Policy'
-    #Properties:
-      #PolicyName: MyCFUsers
-      #PolicyDocument:
-        #Statement:
-          #- Effect: Allow
-            #Action:
-              #- 'cloudformation:Describe*'
-              #- 'cloudformation:List*'
-              #- 'cloudformation:Get*'
-            #Resource: '*'
-      #Groups:
-        #- !Ref MyCFUserGroup
-  
-  #MyCloudFormationAdminPolicies:
-    #Type: 'AWS::IAM::Policy'
-    #Properties:
-      #PolicyName: MyCloudFormationAdmins
-      #PolicyDocument:
-        #Statement:
-          #- Effect: Allow
-            #Action: 'cloudformation:*'
-            #Resource: '*'
-      #Groups:
-        #- !Ref MyCloudFormationAdminGroup
-  
-  #MyCloudFormationKeys:
-    #Type: 'AWS::IAM::AccessKey'
-    #Properties:
-      #UserName: !Ref MyCFUser
+  # Create an Access Key for our user
+  MyCloudFormationKeys:
+    Type: 'AWS::IAM::AccessKey'
+    Properties:
+      UserName: !Ref MyCFUser
 
-#Outputs:
-  #AccessKey:
-    #Value: !Ref MyCloudFormationKeys
-    #Description: AWSAccessKeyId of new user
-  #SecretKey:
-    #Value: !GetAtt 
-      #- MyCloudFormationKeys
-      #- SecretAccessKey
-    #Description: AWSSecretKey of new user
+# Template Output Section
+Outputs:
+  AccessKey:
+    Value: !Ref MyCloudFormationKeys
+    Description: AWSAccessKeyId of new user
+  SecretKey:
+    Value: !GetAtt 
+      - MyCloudFormationKeys
+      - SecretAccessKey
+    Description: AWSSecretKey of new user
 
 
-  
+# Template Parameters Section
 Parameters:
+
+  # Enter your Username Here or choose an option
+  Username:
+    Type: String
+    Default: eec-cloud-user
+    AllowedValues:
+      - eec-cloud-user
+      - eec-docker-lab
+      - eec-git-lab
+      - eec-kb-lab
+      - eec-jenkins-lab
+      - eec-edureka-lab
+    MinLength: '1'
+    MaxLength: '41'
+    Description: New account username
+
+  # Enter Password here
   Password:
     NoEcho: 'true'
     Type: String
@@ -88,4 +112,6 @@ Parameters:
     MinLength: '1'
     MaxLength: '41'
     ConstraintDescription: the password must be between 1 and 41 characters
+
+  
 
