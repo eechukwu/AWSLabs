@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: >-
   CloudFormation Template to create 
-  IAM User: Our admin user.  
+  IAM User,MyCFUserGroup 
 
 
 Resources:
@@ -13,8 +13,8 @@ Resources:
       LoginProfile:
         Password: !Ref Password
   
- # MyCFUserGroup:
-  #  Type: 'AWS::IAM::Group'
+  MyCFUserGroup:
+    Type: 'AWS::IAM::Group'
   
   
   #MyCloudFormationAdminGroup:

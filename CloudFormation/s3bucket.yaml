@@ -1,15 +1,28 @@
 --- 
 Description: S3 bucket created by Emmanuel C during CloudFormation Practice
 
+# Resources to create
 Resources:
 
+  # Logical Name of our resources
   AWSS3Bucket:
     Type: AWS::S3::Bucket
     Properties: 
-      BucketName: !Sub "${AWS::Region}-${AWS::AccountId}-1"
+      #BucketName: !Sub "${AWS::Region}-${AWS::AccountId}-1"
+      BucketName: !Ref InputBucketName
       AccessControl: PublicRead
 
+# CloudFormation output
 Outputs:
   BucketName:
     Description: Print out the name of our sample bucket
     Value: !Ref AWSS3Bucket
+
+# CloudFormation Parameters
+Parameters:
+
+  # Enter your Bucket Name Here
+  InputBucketName:
+    Description: Input Your Bucket Name
+    Type: String
+    Default: eec-cfbucket-001
