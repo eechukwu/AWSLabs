@@ -2,6 +2,7 @@
 
 Description: EC2 instance created by Emmanuel during CloudFormation Practice
 
+# Resources to create
 Resources:
 
 

@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description: Using intrinsic Functions and parameters
+
+
+# Resources to create
+Resources:
+
+  # Logical Name of our S3 bucket
+  # Using join to create dynamic bucket name
+  # example: mybucket1-bucket-us-east-1
+  s3Bucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName:
+        'Fn::Join':
+          - '-'
+          - - Ref: s3NamePrefix
+            - Ref: 'AWS::StackName'
+            - Ref: 'AWS::Region'
+  
+
+# CloudFormation Parameters
+Parameters:
+
+  # Enter your s3 bucket nameprefix or it will be created with the default value : mybucket
+  s3NamePrefix:
+    Description: Enter the unique prefix to the name of the S3 bucket you need to create
+    Type: String
+    Default: mybucket
+
