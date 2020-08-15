@@ -13,16 +13,29 @@ Resources:
       UserName : !Ref Username
       LoginProfile:
         Password: !Ref Password
+
+  MyAdminUser:
+    Type: 'AWS::IAM::User'
+    Properties:
+      UserName : !Ref AdminUsername
+      LoginProfile:
+        Password: !Ref AdminPassword
   
+
   # Create our User Group
   MyCFUserGroup:
     Type: 'AWS::IAM::Group'
+    Properties:
+      GroupName: devops-team
   
-  # Create our User Group
-  MyCloudFormationAdminGroup:
+  # Create our Admin Group
+  MyCFAdminGroup:
     Type: 'AWS::IAM::Group'
+    Properties:
+      GroupName: admin-team
+
   
-  # Add User MyCFUser To Group MyCFUserGroup
+  # Add User MyCFUser To User Group: MyCFUserGroup
   Users:
     Type: 'AWS::IAM::UserToGroupAddition'
     Properties:
@@ -30,13 +43,13 @@ Resources:
       Users:
         - !Ref MyCFUser
   
-  # Add User MyCFUser To Group MyCloudFormationAdminGroup
+  # Add User MyAdminUser To Group MyCFAdminGroup
   Admins:
     Type: 'AWS::IAM::UserToGroupAddition'
     Properties:
-      GroupName: !Ref MyCloudFormationAdminGroup
+      GroupName: !Ref MyCFAdminGroup
       Users:
-        - !Ref MyCFUser
+        - !Ref MyAdminUser
   
   
   # Add Policy To Group MyCFUserGroup
@@ -55,24 +68,31 @@ Resources:
       Groups:
         - !Ref MyCFUserGroup
   
-  # Add Policy To Group MyCloudFormationAdminGroup
-  MyCloudFormationAdminPolicies:
+  # Add Policy To Group MyCFAdminGroup
+  MyCFAdminPolicies:
     Type: 'AWS::IAM::Policy'
     Properties:
-      PolicyName: MyCloudFormationAdmins
+      PolicyName: MyCFAdminPolicy
       PolicyDocument:
         Statement:
           - Effect: Allow
-            Action: 'cloudformation:*'
+            Action: '*'
             Resource: '*'
       Groups:
-        - !Ref MyCloudFormationAdminGroup
+        - !Ref MyCFAdminGroup
   
   # Create an Access Key for our user
-  MyCloudFormationKeys:
+  MyCFUserKey:
     Type: 'AWS::IAM::AccessKey'
     Properties:
       UserName: !Ref MyCFUser
+
+  # Create an Access Key for our MyAdminUser
+  MyCFAdminKey:
+    Type: 'AWS::IAM::AccessKey'
+    Properties:
+      UserName: !Ref MyAdminUser
+
 
 # Template Output Section
 Outputs:
@@ -112,6 +132,34 @@ Parameters:
     MinLength: '1'
     MaxLength: '41'
     ConstraintDescription: the password must be between 1 and 41 characters
+
+
+
+  # Enter your Username Here or choose an option
+  AdminUsername:
+    Type: String
+    Default: eec-cloud-admin
+    AllowedValues:
+      - eec-cloud-admin
+      - eec-docker-admin
+      - eec-git-admin
+      - eec-kb-admin
+      - eec-jenkins-admin
+      - eec-edureka-admin
+    MinLength: '1'
+    MaxLength: '41'
+    Description: New account username
+
+  # Enter Password here
+  AdminPassword:
+    NoEcho: 'true'
+    Type: String
+    Description: New account password
+    MinLength: '1'
+    MaxLength: '41'
+    ConstraintDescription: the password must be between 1 and 41 characters
+
+
 
   
 

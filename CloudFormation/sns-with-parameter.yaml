@@ -24,7 +24,7 @@ Parameters:
   # Parameter for email
   SNSEmail:
     Type: String
-    default: eeccloudformation@gmail.com
+    Default: test@gmail.com
     Description: Enter email for SNS notification
 
   # Enter your SNS Topic Here 
